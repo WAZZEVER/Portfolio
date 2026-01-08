@@ -38,20 +38,22 @@ export async function renderProjectGrid(containerId, limit = null) {
     }
 
     // Render Cards
+    // Render Cards
     container.innerHTML = projects.map(p => {
-        // Fallback for missing data
         const imageUrl = p.thumbnail_url || 'https://via.placeholder.com/800x400/004d48/ffffff?text=No+Image';
         const desc = p.description || 'No description provided.';
         const tags = p.tags || [];
 
+        // Added 'w-full max-w-[350px]' below to ensure consistent sizing in flex layout
         return `
-        <a href="/project?id=${p.id}" class="glass-card rounded-xl overflow-hidden flex flex-col h-full hover:no-underline group transition-all duration-300 hover:border-space-light/50">
+        <a href="/project?id=${p.id}" class="glass-card w-full max-w-[350px] rounded-xl overflow-hidden flex flex-col h-full hover:no-underline group transition-all duration-300 hover:border-space-light/50">
             <!-- Image -->
             <div class="h-48 bg-gray-900 bg-cover bg-center relative overflow-hidden">
                  <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" 
                       style="background-image: url('${imageUrl}');">
                  </div>
             </div>
+            <!-- ... rest of content ... -->
 
             <!-- Content -->
             <div class="p-6 flex-grow relative z-10 bg-[#050b14]/90 backdrop-blur-sm">

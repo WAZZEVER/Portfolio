@@ -42,93 +42,111 @@
         </div>
     </nav>
 
-    <main class="flex-grow pt-28 pb-10 px-4 sm:px-6 max-w-3xl mx-auto">
-        <div class="glass-panel p-10 rounded-2xl relative overflow-hidden">
+   
+
+   
+
+    <main class="flex-grow pt-28 pb-10 px-4 sm:px-6 max-w-6xl mx-auto w-full">
+        <div class="glass-panel p-8 md:p-12 rounded-2xl relative overflow-hidden">
+            <!-- Background Glow -->
             <div class="absolute -top-10 -right-10 w-40 h-40 bg-space-light blur-3xl opacity-20"></div>
             
-            <h2 class="font-display text-4xl text-white mb-6">Behind the Code</h2>
+            <h2 class="font-display text-4xl text-white mb-8 text-center md:text-left">Behind the Code</h2>
             
-            <div class="prose prose-invert max-w-none text-gray-300 leading-relaxed">
-                <p class="text-lg mb-4">
-                    Hi, I’m <span class="text-space-light font-semibold">Jemyson Ang</span> — also known as <span class="text-space-light">Wazzever</span>.
-                    I’m a 17-year-old builder based in Australia, originally from Malaysia, and I speak English, Chinese, and Malay.
-                </p>
+            <!-- 2-Column Layout -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                
+                <!-- Left Column: Text -->
+                <div class="prose prose-invert max-w-none text-gray-300 leading-relaxed order-2 md:order-1">
+                    <p class="text-lg mb-4">
+                        Hi, I’m <span class="text-space-light font-semibold">Jemyson Ang</span> — also known as <span class="text-space-light">Wazzever</span>.
+                        I’m a 17-year-old builder based in Australia, originally from Malaysia, and I speak English, Chinese, and Malay.
+                    </p>
+        
+                    <p class="mb-4">
+                        My journey started with web development, where I fell in love with turning ideas into real, usable products.
+                        But everything changed when I discovered <span class="text-space-light">embedded systems and hardware</span>.
+                        Suddenly, code wasn’t just on a screen — it could interact with the real world.
+                    </p>
+        
+                    <p class="mb-4">
+                        Today, I’m diving deep into PCB design, electronics, and 3D modelling for custom enclosures,
+                        pushing myself to build things that are not only cool, but actually work and help others.
+                        Every project is a step toward sharpening my skills and building real confidence as a creator.
+                    </p>
+        
+                    <p class="mb-4">
+                        My long-term goal is ambitious: to one day build a fully connected <span class="text-space-light">AI-powered home system</span>.
+                        It may sound far away — but I believe great things are built one small, well-designed project at a time.
+                    </p>
+        
+                    <p class="mb-4">
+                        Along the way, I’m also working toward launching my own small brand — a place where I can share my projects,
+                        experiments, and ideas, and let people see what I’m building and who I am.
+                    </p>
+        
+                    <p class="mb-4">What I’m currently focused on:</p>
+        
+                    <ul class="list-disc pl-5 space-y-2 text-white mb-6">
+                        <li>PCB Design & Embedded Systems</li>
+                        <li>AI + Hardware Integration</li>
+                        <li>Product-Oriented Engineering</li>
+                        <li>3D Modelling & Rapid Prototyping</li>
+                    </ul>
     
-                <p class="mb-4">
-                    My journey started with web development, where I fell in love with turning ideas into real, usable products.
-                    But everything changed when I discovered <span class="text-space-light">embedded systems and hardware</span>.
-                    Suddenly, code wasn’t just on a screen — it could interact with the real world.
-                </p>
+                    <!-- Social Links -->
+                    <div class="pt-6 border-t border-white/10">
+                        <h3 class="text-sm uppercase tracking-widest text-gray-500 mb-4">Connect</h3>
+                        <div class="flex gap-4">
+                               <!-- Gmail -->
+                        <a href="mailto:junjueang@gmail.com" class="w-10 h-10 rounded flex items-center justify-center bg-gray-800 hover:bg-red-500 transition-all" title="Email">
+                            <i class="fas fa-envelope text-white"></i>
+                        </a>
     
-                <p class="mb-4">
-                    Today, I’m diving deep into PCB design, electronics, and 3D modelling for custom enclosures,
-                    pushing myself to build things that are not only cool, but actually work and help others.
-                    Every project is a step toward sharpening my skills and building real confidence as a creator.
-                </p>
+                        <!-- Discord -->
+                        <a href="https://discord.gg/4EQtTmJ4zj" target="_blank" class="w-10 h-10 rounded flex items-center justify-center bg-gray-800 hover:bg-indigo-500 transition-all" title="Discord">
+                            <i class="fab fa-discord text-white"></i>
+                        </a>
     
-                <p class="mb-4">
-                    My long-term goal is ambitious: to one day build a fully connected <span class="text-space-light">AI-powered home system</span>.
-                    It may sound far away — but I believe great things are built one small, well-designed project at a time.
-                </p>
+                        <!-- WhatsApp -->
+                        <a href="https://wa.me/0480556145" target="_blank" class="w-10 h-10 rounded flex items-center justify-center bg-gray-800 hover:bg-green-500 transition-all" title="WhatsApp">
+                            <i class="fab fa-whatsapp text-white"></i>
+                        </a>
     
-                <p class="mb-4">
-                    Along the way, I’m also working toward launching my own small brand — a place where I can share my projects,
-                    experiments, and ideas, and let people see what I’m building and who I am.
-                </p>
-    
-                <p class="mb-4">What I’m currently focused on:</p>
-    
-                <ul class="list-disc pl-5 space-y-2 text-white mb-6">
-                    <li>PCB Design & Embedded Systems</li>
-                    <li>AI + Hardware Integration</li>
-                    <li>Product-Oriented Engineering</li>
-                    <li>3D Modelling & Rapid Prototyping</li>
-                </ul>
-            </div>
-    
-            <div class="mt-10 pt-6 border-t border-white/10">
-                <h3 class="text-sm uppercase tracking-widest text-gray-500 mb-4">Connect</h3>
-            
-                <div class="flex gap-4">
-                    <!-- Gmail -->
-                    <a href="mailto:junjueang@gmail.com"
-                       class="w-10 h-10 rounded flex items-center justify-center bg-gray-800
-                              hover:bg-red-500 transition-all"
-                       title="Email">
-                        <i class="fas fa-envelope text-white"></i>
-                    </a>
-            
-                    <!-- Discord -->
-                    <a href="https://discord.gg/4EQtTmJ4zj"
-                       target="_blank"
-                       class="w-10 h-10 rounded flex items-center justify-center bg-gray-800
-                              hover:bg-indigo-500 transition-all"
-                       title="Discord">
-                        <i class="fab fa-discord text-white"></i>
-                    </a>
-            
-                    <!-- WhatsApp -->
-                    <a href="https://wa.me/0480556145"
-                       target="_blank"
-                       class="w-10 h-10 rounded flex items-center justify-center bg-gray-800
-                              hover:bg-green-500 transition-all"
-                       title="WhatsApp">
-                        <i class="fab fa-whatsapp text-white"></i>
-                    </a>
-            
-                    <!-- Facebook -->
-                    <a href="https://www.facebook.com/juniueang/"
-                       target="_blank"
-                       class="w-10 h-10 rounded flex items-center justify-center bg-gray-800
-                              hover:bg-blue-600 transition-all"
-                       title="Facebook">
-                        <i class="fab fa-facebook-f text-white"></i>
-                    </a>
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/juniueang/" target="_blank" class="w-10 h-10 rounded flex items-center justify-center bg-gray-800 hover:bg-blue-600 transition-all" title="Facebook">
+                            <i class="fab fa-facebook-f text-white"></i>
+                        </a>
+                        </div>
+                    </div>
                 </div>
+    
+                <!-- Right Column: Dual Images (Stacked) -->
+                <div class="order-1 md:order-2 flex flex-col items-center gap-6">
+                    
+                    <!-- Image 1 (Top) - e.g. Profile Pic -->
+                    <div class="relative w-64 h-64 md:w-72 md:h-72 group cursor-pointer">
+                        <div class="absolute inset-0 bg-space-light blur-2xl opacity-20 rounded-2xl group-hover:opacity-40 transition-opacity duration-500"></div>
+                        <div class="relative w-full h-full rounded-2xl bg-gray-800 border-2 border-space-light/30 shadow-[0_0_20px_rgba(63,243,231,0.15)] overflow-hidden bg-cover bg-center transition-transform duration-500 group-hover:scale-105 group-hover:rotate-1" 
+                             style="background-image: url('https://media.discordapp.net/attachments/875195544010633306/1458791387372716094/Screenshot_2026-01-04_224602.png?ex=6960ecd9&is=695f9b59&hm=546645fcea484ec2195f44119457cf92a16e132798a1b7bbba77e8c44f2e9411&=&format=webp&quality=lossless&width=1092&height=791');">
+                        </div>
+                    </div>
+    
+                    <!-- Image 2 (Bottom) - e.g. Workspace/Soldering -->
+                    <div class="relative w-64 h-64 md:w-72 md:h-72 group cursor-pointer">
+                        <div class="absolute inset-0 bg-space-dark blur-2xl opacity-30 rounded-2xl group-hover:opacity-50 transition-opacity duration-500"></div>
+                        <div class="relative w-full h-full rounded-2xl bg-gray-800 border-2 border-space-dark/50 shadow-[0_0_20px_rgba(0,77,72,0.3)] overflow-hidden bg-cover bg-center transition-transform duration-500 group-hover:scale-105 group-hover:-rotate-1" 
+                             style="background-image: url('https://media.discordapp.net/attachments/875195544010633306/1458679357219541196/Screenshot_2026-01-04_231552.png?ex=69608483&is=695f3303&hm=264aae464ae2431849d7396b0485e14d77196b858321a153bb47e38d6048f563&=&format=webp&quality=lossless&width=1092&height=788');">
+                        </div>
+                    </div>
+    
+                </div>
+                
             </div>
-            
         </div>
     </main>
+    
+    
     
 </body>
 </html>
