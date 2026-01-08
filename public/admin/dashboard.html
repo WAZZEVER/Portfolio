@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-[#050b14] text-white min-h-screen font-sans">
+    
+    <!-- Top Bar -->
+    <nav class="border-b border-gray-800 bg-gray-900/50 p-4 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-teal-400 flex items-center justify-center text-black font-bold">W</div>
+            <span class="font-bold text-xl tracking-wider">COMMAND CENTER</span>
+        </div>
+        <div class="flex gap-4">
+            <a href="/" target="_blank" class="text-gray-400 hover:text-white"><i class="fas fa-external-link-alt"></i> View Site</a>
+            <button id="logout-btn" class="text-red-400 hover:text-red-300"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto mt-10 p-6">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold">Project Database</h1>
+            <a href="/admin/editor" class="bg-teal-500 hover:bg-teal-400 text-black font-bold py-2 px-6 rounded flex items-center gap-2">
+                <i class="fas fa-plus"></i> New Project
+            </a>
+        </div>
+
+        <!-- Project List -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-gray-800 text-gray-400 text-sm uppercase">
+                    <tr>
+                        <th class="p-4">Title</th>
+                        <th class="p-4">Status</th>
+                        <th class="p-4">Views</th>
+                        <th class="p-4">Last Updated</th>
+                        <th class="p-4 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="project-list" class="divide-y divide-gray-800 text-sm">
+                    <!-- JS Injected Rows -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script type="module">
+        import { supabase } from '/js/supabase.js';
+
+        // Auth Check
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) window.location.href = '/admin';
+
+        // Logout
+        document.getElementById('logout-btn').onclick = async () => {
+            await supabase.auth.signOut();
+            window.location.href = '/admin';
+        };
+
+        // Fetch Projects
+        async function loadProjects() {
+            const { data: projects, error } = await supabase
+                .from('projects')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            if(error) alert('Error loading projects');
+
+            const list = document.getElementById('project-list');
+            list.innerHTML = projects.map(p => `
+                <tr class="hover:bg-gray-800/50 transition">
+                    <td class="p-4 font-bold text-white">${p.title}</td>
+                    <td class="p-4">
+                        <span class="px-2 py-1 rounded text-xs ${p.status === 'published' ? 'bg-green-900 text-green-300' : 'bg-yellow-900 text-yellow-300'}">
+                            ${p.status.toUpperCase()}
+                        </span>
+                    </td>
+                    <td class="p-4 text-gray-400">${p.views}</td>
+                    <td class="p-4 text-gray-400">${new Date(p.updated_at).toLocaleDateString()}</td>
+                    <td class="p-4 text-right space-x-2">
+                        <a href="/admin/editor?id=${p.id}" class="text-blue-400 hover:text-blue-300">Edit</a>
+                        <button onclick="deleteProject('${p.id}')" class="text-red-500 hover:text-red-400">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        window.deleteProject = async (id) => {
+            if(!confirm('Are you sure? This cannot be undone.')) return;
+            await supabase.from('projects').delete().eq('id', id);
+            loadProjects(); // Refresh
+        }
+
+        loadProjects();
+    </script>
+</body>
+</html>

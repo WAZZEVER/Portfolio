@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wazzever | Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/cursor.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { space: { light: '#3ff3e7', dark: '#004d48', bg: '#050b14' } },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Orbitron', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+    <!-- Background -->
+    <div class="space-bg"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b-0 border-b-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="/" class="flex items-center cursor-pointer hover:opacity-80 transition">
+                    <div class="w-8 h-8 rounded-full bg-space-light flex items-center justify-center mr-2 shadow-[0_0_10px_#3ff3e7]">
+                        <span class="text-black font-bold text-xs">W</span>
+                    </div>
+                    <span class="font-display font-bold text-xl tracking-wider text-white">WAZZEVER</span>
+                </a>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/" class="text-space-light px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                        <a href="/projects" class="text-gray-300 hover:text-space-light px-3 py-2 rounded-md text-sm font-medium transition-colors">Projects</a>
+                        <a href="/about" class="text-gray-300 hover:text-space-light px-3 py-2 rounded-md text-sm font-medium transition-colors">About</a>
+                        <a href="/marketplace" class="text-gray-400 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Marketplace</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="flex-grow pt-20 pb-10 px-4 sm:px-6">
+        <section class="max-w-5xl mx-auto text-center mt-10 md:mt-20">
+            <div class="relative mx-auto w-32 h-32 mb-8 animate-float">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-space-dark to-space-light blur-md opacity-50"></div>
+                <div class="relative w-full h-full rounded-full bg-black border-2 border-space-light overflow-hidden flex items-center justify-center bg-cover bg-center" style="background-image: url('https://media.discordapp.net/attachments/875195544010633306/1458713862055657514/W.png?ex=6960a4a6&is=695f5326&hm=00a07a99abde20a27ab39a479c92762d1defb7869ecb85727717ab669616c03b&=&format=webp&quality=lossless&width=750&height=750');"></div>
+            </div>
+
+            <h1 class="font-display text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-space-light to-space-dark mb-4">
+                WAZZEVER
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-2 font-light italic">"Code with soul, hardware with heart."</p>
+            
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-center mt-12 mb-16">
+                <a href="/projects" class="px-8 py-3 bg-transparent border border-space-light text-space-light font-bold rounded hover:bg-space-light hover:text-black hover:shadow-[0_0_20px_#3ff3e7] transition-all duration-300 w-48 block">
+                    VIEW PROJECTS
+                </a>
+                <a href="/about" class="px-8 py-3 bg-space-dark/20 border border-transparent text-white rounded hover:bg-space-dark/50 transition-all duration-300 w-48 block">
+                    ABOUT ME
+                </a>
+            </div>
+
+            <!-- Trust Signals -->
+            <div class="flex justify-center gap-8 text-xs text-gray-500 font-mono border-t border-white/5 pt-8 max-w-lg mx-auto">
+                <span><i class="fas fa-code mr-2"></i>12+ Projects</span>
+                <span><i class="fas fa-bolt mr-2"></i>Updated Recently</span>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-white/5 py-8 mt-auto text-center text-gray-600 text-sm">© 2024 Wazzever.</footer>
+</body>
+</html>

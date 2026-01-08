@@ -1,0 +1,14 @@
+{
+    "rewrites": [
+      { "source": "/", "destination": "/public/index.html" },
+      { "source": "/projects", "destination": "/public/projects.html" },
+      { "source": "/project", "destination": "/public/project.html" },
+      { "source": "/about", "destination": "/public/about.html" },
+      { "source": "/marketplace", "destination": "/public/marketplace.html" },
+      { "source": "/admin", "destination": "/public/admin/login.html" },
+      { "source": "/admin/dashboard", "destination": "/public/admin/dashboard.html" },
+      { "source": "/admin/editor", "destination": "/public/admin/editor.html" },
+      { "source": "/js/(.*)", "destination": "/public/js/$1" },
+      { "source": "/css/(.*)", "destination": "/public/css/$1" }
+    ]
+  }

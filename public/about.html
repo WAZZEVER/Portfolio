@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wazzever | About</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/cursor.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { space: { light: '#3ff3e7', dark: '#004d48', bg: '#050b14' } },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Orbitron', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+    <div class="space-bg"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b-0 border-b-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="/" class="flex items-center cursor-pointer">
+                    <div class="w-8 h-8 rounded-full bg-space-light flex items-center justify-center mr-2"><span class="text-black font-bold text-xs">W</span></div>
+                    <span class="font-display font-bold text-xl tracking-wider text-white">WAZZEVER</span>
+                </a>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/" class="text-gray-300 hover:text-space-light px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                        <a href="/projects" class="text-gray-300 hover:text-space-light px-3 py-2 rounded-md text-sm font-medium">Projects</a>
+                        <a href="/about" class="text-space-light px-3 py-2 rounded-md text-sm font-medium">About</a>
+                        <a href="/marketplace" class="text-gray-400 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Marketplace</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-28 pb-10 px-4 sm:px-6 max-w-3xl mx-auto">
+        <div class="glass-panel p-10 rounded-2xl relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-space-light blur-3xl opacity-20"></div>
+            
+            <h2 class="font-display text-4xl text-white mb-6">Behind the Code</h2>
+            
+            <div class="prose prose-invert max-w-none text-gray-300 leading-relaxed">
+                <p class="text-lg mb-4">
+                    Hi, I’m <span class="text-space-light font-semibold">Jemyson Ang</span> — also known as <span class="text-space-light">Wazzever</span>.
+                    I’m a 17-year-old builder based in Australia, originally from Malaysia, and I speak English, Chinese, and Malay.
+                </p>
+    
+                <p class="mb-4">
+                    My journey started with web development, where I fell in love with turning ideas into real, usable products.
+                    But everything changed when I discovered <span class="text-space-light">embedded systems and hardware</span>.
+                    Suddenly, code wasn’t just on a screen — it could interact with the real world.
+                </p>
+    
+                <p class="mb-4">
+                    Today, I’m diving deep into PCB design, electronics, and 3D modelling for custom enclosures,
+                    pushing myself to build things that are not only cool, but actually work and help others.
+                    Every project is a step toward sharpening my skills and building real confidence as a creator.
+                </p>
+    
+                <p class="mb-4">
+                    My long-term goal is ambitious: to one day build a fully connected <span class="text-space-light">AI-powered home system</span>.
+                    It may sound far away — but I believe great things are built one small, well-designed project at a time.
+                </p>
+    
+                <p class="mb-4">
+                    Along the way, I’m also working toward launching my own small brand — a place where I can share my projects,
+                    experiments, and ideas, and let people see what I’m building and who I am.
+                </p>
+    
+                <p class="mb-4">What I’m currently focused on:</p>
+    
+                <ul class="list-disc pl-5 space-y-2 text-white mb-6">
+                    <li>PCB Design & Embedded Systems</li>
+                    <li>AI + Hardware Integration</li>
+                    <li>Product-Oriented Engineering</li>
+                    <li>3D Modelling & Rapid Prototyping</li>
+                </ul>
+            </div>
+    
+            <div class="mt-10 pt-6 border-t border-white/10">
+                <h3 class="text-sm uppercase tracking-widest text-gray-500 mb-4">Connect</h3>
+            
+                <div class="flex gap-4">
+                    <!-- Gmail -->
+                    <a href="mailto:junjueang@gmail.com"
+                       class="w-10 h-10 rounded flex items-center justify-center bg-gray-800
+                              hover:bg-red-500 transition-all"
+                       title="Email">
+                        <i class="fas fa-envelope text-white"></i>
+                    </a>
+            
+                    <!-- Discord -->
+                    <a href="https://discord.gg/4EQtTmJ4zj"
+                       target="_blank"
+                       class="w-10 h-10 rounded flex items-center justify-center bg-gray-800
+                              hover:bg-indigo-500 transition-all"
+                       title="Discord">
+                        <i class="fab fa-discord text-white"></i>
+                    </a>
+            
+                    <!-- WhatsApp -->
+                    <a href="https://wa.me/0480556145"
+                       target="_blank"
+                       class="w-10 h-10 rounded flex items-center justify-center bg-gray-800
+                              hover:bg-green-500 transition-all"
+                       title="WhatsApp">
+                        <i class="fab fa-whatsapp text-white"></i>
+                    </a>
+            
+                    <!-- Facebook -->
+                    <a href="https://www.facebook.com/juniueang/"
+                       target="_blank"
+                       class="w-10 h-10 rounded flex items-center justify-center bg-gray-800
+                              hover:bg-blue-600 transition-all"
+                       title="Facebook">
+                        <i class="fab fa-facebook-f text-white"></i>
+                    </a>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+    
+</body>
+</html>
