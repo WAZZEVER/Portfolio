@@ -47,36 +47,51 @@
         </div>
     </nav>
 
-    <main id="project-content" class="flex-grow pt-28 pb-10 px-4 sm:px-6 max-w-4xl mx-auto w-full">
+    <main id="project-content" class="flex-grow pt-28 pb-10 px-4 sm:px-6 max-w-5xl mx-auto w-full">
         <a href="/projects" class="mb-6 inline-block text-space-light hover:text-white"><i class="fas fa-arrow-left"></i> Back to Lab</a>
         
-        <div class="glass-panel p-8 rounded-2xl">
+        <div class="glass-panel p-6 md:p-8 rounded-2xl">
             <!-- Header -->
             <div class="flex justify-between items-start mb-6">
-                <h1 id="p-title" class="font-display text-4xl font-bold text-white">Loading...</h1>
+                <h1 id="p-title" class="font-display text-3xl md:text-4xl font-bold text-white">Loading...</h1>
                 <span id="p-status" class="px-3 py-1 bg-space-dark text-space-light text-xs rounded-full border border-space-light">...</span>
             </div>
-
+    
+            <!-- NEW: Progress Bar Stepper -->
+            <div id="progress-stepper" class="mb-10 mt-4 px-2">
+                <!-- Injected by JS -->
+            </div>
+    
             <!-- Hero Image -->
-            <div id="p-image" class="w-full h-64 md:h-96 bg-black rounded-xl mb-8 bg-cover bg-center border border-white/10 shadow-[0_0_30px_rgba(63,243,231,0.1)]"></div>
-
+            <div id="p-image" class="w-full h-64 md:h-96 bg-black rounded-xl mb-8 bg-cover bg-center border border-white/10 shadow-[0_0_30px_rgba(63,243,231,0.1)] hidden"></div>
+    
             <!-- Stats Bar -->
             <div class="flex gap-6 mb-8 text-sm font-mono text-gray-400 border-b border-white/10 pb-4">
                 <span id="p-views"><i class="fas fa-eye text-space-light"></i> -- Views</span>
                 <span id="p-likes" class="cursor-pointer hover:text-white"><i class="fas fa-heart text-space-light"></i> -- Likes</span>
                 <span id="p-date"><i class="fas fa-calendar"></i> Updated: --</span>
             </div>
-
+    
+            <!-- NEW: Content Tabs -->
+            <div class="flex border-b border-white/10 mb-8">
+                <button onclick="switchProjectTab('main')" id="tab-main" class="px-4 py-2 text-sm font-bold text-space-light border-b-2 border-space-light transition-colors">
+                    PROJECT STORY
+                </button>
+                <button onclick="switchProjectTab('learnings')" id="tab-learn" class="px-4 py-2 text-sm font-bold text-gray-500 border-b-2 border-transparent hover:text-white transition-colors">
+                    To Myself
+                </button>
+            </div>
+    
             <!-- Content Grid -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-    
-                <!-- Main Blog Content (Markdown) -->
+                
+                <!-- Main Content Area -->
                 <div class="md:col-span-3">
                     <div id="markdown-content" class="prose prose-invert max-w-none prose-headings:text-white prose-a:text-space-light prose-code:text-space-light prose-img:rounded-xl">
                         <!-- Markdown renders here -->
                     </div>
                 </div>
-
+    
                 <!-- Sidebar -->
                 <div class="md:col-span-1 space-y-6">
                     <div class="glass-card p-4 rounded-lg">
@@ -84,9 +99,7 @@
                         <div id="p-stack" class="flex flex-wrap gap-2"></div>
                     </div>
                     
-                    <div id="links-container">
-                        <!-- Links injected here -->
-                    </div>
+                    <div id="links-container"></div>
                 </div>
             </div>
         </div>

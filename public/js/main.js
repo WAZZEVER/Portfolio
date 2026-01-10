@@ -81,13 +81,66 @@ export async function renderProjectGrid(containerId, limit = null) {
     }).join('');
 }
 
+// --- HELPER: RENDER PROGRESS STEPPER ---
+function renderProgressBar(currentPhase) {
+    const phases = ['Concept', 'Design', 'Manufacturing', 'Building', 'Refining', 'Complete'];
+    const container = document.getElementById('progress-stepper');
+    if (!container) return;
+
+    let currentIndex = phases.indexOf(currentPhase);
+    if (currentIndex === -1) currentIndex = 0; // Default to start
+
+    // Calculate percentage for the connecting line
+    const progressPercent = (currentIndex / (phases.length - 1)) * 100;
+
+    let html = `
+        <div class="relative flex justify-between items-center w-full mb-8">
+            <!-- Background Line -->
+            <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-800 -z-10 rounded"></div>
+            <!-- Active Progress Line -->
+            <div class="absolute top-1/2 left-0 h-1 bg-space-light -z-10 rounded transition-all duration-1000" style="width: ${progressPercent}%;"></div>
+    `;
+
+    html += phases.map((phase, index) => {
+        let circleClass = "bg-gray-800 border-gray-600 text-gray-500"; // Default (Future)
+        let textClass = "text-gray-600";
+        let glow = "";
+
+        if (index < currentIndex) {
+            // Completed
+            circleClass = "bg-space-dark border-space-light text-space-light"; 
+            textClass = "text-space-light";
+        } else if (index === currentIndex) {
+            // Active
+            circleClass = "bg-black border-space-light text-space-light shadow-[0_0_15px_#3ff3e7]";
+            textClass = "text-white font-bold";
+            glow = `<div class="absolute inset-0 bg-space-light rounded-full animate-ping opacity-20"></div>`;
+        }
+
+        return `
+            <div class="flex flex-col items-center relative group cursor-default">
+                <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center text-[10px] font-bold z-10 transition-all ${circleClass}">
+                    ${glow}
+                    ${index < currentIndex ? '<i class="fas fa-check"></i>' : index + 1}
+                </div>
+                <div class="absolute top-10 text-[10px] uppercase tracking-wider ${textClass} opacity-0 group-hover:opacity-100 md:opacity-100 transition-opacity whitespace-nowrap">
+                    ${phase}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    html += `</div>`;
+    container.innerHTML = html;
+}
+
 // --- 2. RENDER SINGLE PROJECT (For Project Detail Page) ---
-// --- 2. RENDER SINGLE PROJECT (For Project Detail Page) ---
+// --- UPDATED RENDER SINGLE PROJECT ---
 export async function renderProjectDetail() {
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
     
-    if(!id) return; 
+    if(!id) return; // Stop if no ID
 
     // 1. Fetch Project Data
     const { data: p, error } = await supabase
@@ -102,34 +155,73 @@ export async function renderProjectDetail() {
         return;
     }
 
-    // 2. Populate Header & Metadata
+    // 2. Populate Header Info
     document.getElementById('p-title').innerText = p.title;
     document.getElementById('p-status').innerText = (p.status || 'Draft').toUpperCase();
-    document.getElementById('p-date').innerHTML = `<i class="fas fa-calendar"></i> Updated: ${new Date(p.updated_at).toLocaleDateString()}`;
-    
+
+    // --- FIX 1: THUMBNAIL VISIBILITY ---
     const imgEl = document.getElementById('p-image');
     if (p.thumbnail_url) {
         imgEl.style.backgroundImage = `url('${p.thumbnail_url}')`;
-        imgEl.style.display = 'block';
+        // We must specifically remove the Tailwind 'hidden' class
+        imgEl.classList.remove('hidden'); 
     } else {
-        imgEl.style.display = 'none';
+        imgEl.classList.add('hidden');
     }
 
-    // 3. Render Markdown Content
-    const contentEl = document.getElementById('markdown-content');
+    // --- FIX 2: UPDATED DATE ---
+    const dateRaw = p.updated_at || p.created_at; // Fallback to created_at if updated is missing
+    let readableDate = "Unknown";
     
-    // Debugging check
-    if (typeof marked === 'undefined') {
-        console.error("❌ 'marked' library missing. Add script tag to project.html");
-        contentEl.innerHTML = "<p class='text-red-500'>System Error: Markdown parser not loaded.</p>";
-    } else if (p.content_md) {
-        // Render content
-        contentEl.innerHTML = marked.parse(p.content_md);
-    } else {
-        contentEl.innerHTML = '<p class="text-gray-500">No content details provided.</p>';
+    if (dateRaw) {
+        // Formats to: "Oct 24, 2023"
+        readableDate = new Date(dateRaw).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+    }
+    document.getElementById('p-date').innerHTML = `<i class="fas fa-calendar mr-2"></i> Updated: ${readableDate}`;
+
+    // 3. Render Progress Bar
+    // Ensure this helper function exists in your main.js (from previous steps)
+    if (typeof renderProgressBar === 'function') {
+        renderProgressBar(p.project_phase || 'Concept');
     }
 
-    // 4. Tech Stack & Links
+    // 4. Content Tabs Logic
+    const contentEl = document.getElementById('markdown-content');
+    const tabMain = document.getElementById('tab-main');
+    const tabLearn = document.getElementById('tab-learn');
+
+    const mdMain = p.content_md || 'No content provided.';
+    const mdLearn = p.learnings_md || 'No learnings added yet.';
+
+    // Default View
+    if (typeof marked !== 'undefined') {
+        contentEl.innerHTML = marked.parse(mdMain);
+    }
+
+    // Tab Handlers
+    window.switchProjectTab = (tab) => {
+        if(tab === 'main') {
+            contentEl.innerHTML = marked.parse(mdMain);
+            tabMain.classList.add('text-space-light', 'border-space-light');
+            tabMain.classList.remove('text-gray-500', 'border-transparent');
+            
+            tabLearn.classList.remove('text-space-light', 'border-space-light');
+            tabLearn.classList.add('text-gray-500', 'border-transparent');
+        } else {
+            contentEl.innerHTML = marked.parse(mdLearn);
+            tabLearn.classList.add('text-space-light', 'border-space-light');
+            tabLearn.classList.remove('text-gray-500', 'border-transparent');
+            
+            tabMain.classList.remove('text-space-light', 'border-space-light');
+            tabMain.classList.add('text-gray-500', 'border-transparent');
+        }
+    };
+
+    // 5. Tech Stack & Links
     const stackContainer = document.getElementById('p-stack');
     const tags = p.tags || [];
     stackContainer.innerHTML = tags.length ? tags.map(s => 
@@ -143,39 +235,23 @@ export async function renderProjectDetail() {
     if (links.demo) linksContainer.innerHTML += `<a href="${links.demo}" target="_blank" class="block w-full py-3 bg-space-light text-black font-bold text-center rounded hover:shadow-[0_0_15px_#3ff3e7] transition-all mb-3">Live Demo <i class="fas fa-external-link-alt ml-2"></i></a>`;
     if (links.github) linksContainer.innerHTML += `<a href="${links.github}" target="_blank" class="block w-full py-3 bg-gray-800 text-white font-bold text-center rounded hover:bg-gray-700 transition-all border border-gray-600">GitHub Repo <i class="fab fa-github ml-2"></i></a>`;
 
-    // 5. Update Views (Backend Call)
-    // We don't await this to speed up rendering, but we log errors
-    supabase.rpc('increment_view', { row_id: id }).then(({ error }) => {
-        if (error) console.error("Failed to increment view:", error);
-        else console.log("View counted.");
-    });
-
-    // Display initial stats
-    let currentViews = (p.views || 0) + 1; // +1 to reflect current visit
-    let currentLikes = p.likes || 0;
-
-    document.getElementById('p-views').innerHTML = `<i class="fas fa-eye text-space-light"></i> ${currentViews} Views`;
+    // 6. Stats (Views/Likes)
+    await supabase.rpc('increment_view', { row_id: id });
+    
+    document.getElementById('p-views').innerHTML = `<i class="fas fa-eye text-space-light"></i> ${p.views + 1} Views`;
     
     const likeBtn = document.getElementById('p-likes');
+    let currentLikes = p.likes || 0;
     likeBtn.innerHTML = `<i class="fas fa-heart text-space-light"></i> ${currentLikes} Likes`;
     
-    // 6. Interaction: Like Button
     likeBtn.onclick = async () => {
-        if(likeBtn.classList.contains('liked')) return; // Block double clicks
-
-        likeBtn.innerHTML = `<i class="fas fa-spinner fa-spin text-space-light"></i> Saving...`;
+        if(likeBtn.classList.contains('liked')) return;
         
         const { error } = await supabase.rpc('increment_like', { row_id: id });
-
-        if (error) {
-            console.error("Like failed:", error);
-            alert("Could not like: " + error.message);
-            likeBtn.innerHTML = `<i class="fas fa-heart text-space-light"></i> ${currentLikes} Likes`; // Revert
-        } else {
+        if (!error) {
             currentLikes++;
             likeBtn.innerHTML = `<i class="fas fa-heart text-red-500"></i> ${currentLikes} Likes`;
             likeBtn.classList.add('liked');
-            console.log("Like saved to DB!");
         }
     };
 }
@@ -206,3 +282,4 @@ document.addEventListener('mousemove', function(e) {
         particle.remove();
     }, 800);
 });
+

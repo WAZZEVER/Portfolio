@@ -2,115 +2,77 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Wazzever Editor Pro</title>
+    <title>Wazzever Editor (Dual Mode)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Supabase -->
+    <!-- Supabase & Toast UI -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- EasyMDE -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
-
-    <!-- Turndown + Plugins -->
-    <script src="https://unpkg.com/turndown/dist/turndown.js"></script>
-    <script src="https://unpkg.com/turndown-plugin-gfm/dist/turndown-plugin-gfm.js"></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/theme/toastui-editor-dark.min.css" />
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
     <style>
-        /* --- 1. LAYOUT & SCROLLING FIXES --- */
-        body { 
-            overflow: hidden; /* Prevent window scroll, we scroll inside elements */
-        }
-
-        /* Make the editor container fill the parent flex column */
-        .EasyMDEContainer { 
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            background: #0d1117; 
-            border: none;
-        }
-
-        /* Toolbar stays at top */
-        .editor-toolbar { 
-            flex-shrink: 0; /* Don't shrink */
-            background-color: #1f2937; 
-            border-color: #374151; 
-            border-radius: 0;
-            color: #fff; 
-        }
-        .editor-toolbar i { color: #e5e7eb; }
-        .editor-toolbar button:hover { background: #374151; }
-
-        /* The Editing Area - Fills remaining space */
-        .CodeMirror { 
-            flex-grow: 1; 
-            height: auto !important; /* Override library fixed height */
-            background: #0d1117; 
-            color: #ffffff !important; /* Force White Text */
-            border: none;
-            font-family: 'Menlo', 'Monaco', 'Courier New', monospace; 
-            font-size: 15px;
-            padding: 20px;
-        }
-
-        /* --- 2. CURSOR & TYPING VISIBILITY FIXES --- */
+        /* Custom Space Theme Overrides */
+        .toastui-editor-defaultUI { border: none !important; }
+        .toastui-editor-defaultUI .toastui-editor-md-container,
+        .toastui-editor-defaultUI .toastui-editor-ww-container { background-color: #0d1117 !important; }
+        .toastui-editor-defaultUI-toolbar { background-color: #1f2937 !important; border-bottom: 1px solid #374151 !important; }
+        .toastui-editor-contents { font-family: 'Inter', sans-serif !important; font-size: 16px !important; color: #e2e8f0 !important; }
+        .toastui-editor-contents p { color: #e2e8f0 !important; }
+        .toastui-editor-contents h1, .toastui-editor-contents h2 { color: white !important; border-bottom-color: #374151 !important; }
+        .toastui-editor-contents table { border-color: #374151 !important; }
+        .toastui-editor-contents th { background-color: #004d48 !important; color: white !important; border-color: #374151 !important; }
+        .toastui-editor-contents td { border-color: #374151 !important; }
+        .toastui-editor-mode-switch { display: none !important; }
+        body { overflow: hidden; }
         
-        /* The blinky cursor - Make it Neon Cyan */
-        .CodeMirror-cursor { 
-            border-left: 2px solid #3ff3e7 !important; 
-            border-right: none;
-            width: 0;
-        }
-
-        /* The text you are selecting */
-        .CodeMirror-selected { background: rgba(63, 243, 231, 0.2) !important; }
-        .CodeMirror-focused .CodeMirror-selected { background: rgba(63, 243, 231, 0.2) !important; }
-        
-        /* The line you are currently typing on */
-        .CodeMirror-activeline-background { background: rgba(255, 255, 255, 0.05) !important; }
-
-        /* --- 3. PREVIEW MODE --- */
-        .editor-preview { 
-            background: #050b14; 
-            color: #d1d5db; 
-            padding: 2rem;
-            position: absolute; /* Fix overlay issues */
-            height: 100%;
-        }
-        .editor-preview h1, .editor-preview h2 { border-bottom: 1px solid #374151; padding-bottom: 0.5em; margin-bottom: 1em; }
-        .editor-preview a { color: #3ff3e7; text-decoration: underline; }
-        
-        .editor-statusbar { display: none; }
+        /* Tab Styling */
+        .tab-btn { border-bottom: 2px solid transparent; color: #9ca3af; transition: all 0.3s; }
+        .tab-btn.active { border-bottom: 2px solid #3ff3e7; color: #3ff3e7; font-weight: bold; }
     </style>
 </head>
 <body class="bg-[#050b14] text-white h-screen flex flex-col">
 
-    <!-- Header / Nav -->
+    <!-- Header -->
     <header class="h-16 bg-gray-900 border-b border-gray-800 flex items-center justify-between px-6 shrink-0 z-50">
         <div class="flex items-center gap-4">
-            <a href="/admin/dashboard" class="text-gray-400 hover:text-white"><i class="fas fa-arrow-left"></i> Back</a>
-            <span class="text-gray-600">|</span>
-            <input type="text" id="title" placeholder="Project Title" class="bg-transparent text-xl font-bold focus:outline-none w-96 text-white placeholder-gray-600">
+            <a href="/admin/dashboard" class="text-gray-400 hover:text-white"><i class="fas fa-arrow-left"></i></a>
+            <input type="text" id="title" placeholder="Project Title" class="bg-transparent text-xl font-bold focus:outline-none w-80 text-white placeholder-gray-600">
         </div>
+        
+        <!-- Phase Selector -->
         <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 bg-gray-800 px-3 py-1 rounded border border-gray-700">
+                <span class="text-xs text-gray-400 uppercase font-bold">Phase:</span>
+                <select id="project_phase" class="bg-transparent text-sm text-space-light font-bold outline-none cursor-pointer">
+                    <option value="Concept">Concept</option>
+                    <option value="Design">Design</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                    <option value="Building">Building</option>
+                    <option value="Refining">Refining</option>
+                    <option value="Complete">Complete</option>
+                </select>
+            </div>
+
             <div id="upload-status" class="text-xs text-yellow-400 hidden"><i class="fas fa-spinner fa-spin"></i> Uploading...</div>
+            
             <select id="status" class="bg-gray-800 text-sm p-2 rounded border border-gray-700 focus:border-teal-500 outline-none">
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
             </select>
+            
             <button id="save-btn" class="bg-teal-500 hover:bg-teal-400 text-black font-bold py-2 px-6 rounded transition">
                 <i class="fas fa-save mr-2"></i> Save
             </button>
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Main Layout -->
     <div class="flex flex-1 overflow-hidden">
         
-        <!-- Sidebar (Metadata) -->
-        <aside class="w-80 bg-gray-900 border-r border-gray-800 p-6 overflow-y-auto shrink-0 hidden md:block z-40">
+        <!-- Sidebar -->
+        <aside class="w-72 bg-gray-900 border-r border-gray-800 p-6 overflow-y-auto shrink-0 hidden md:block z-40">
             <h3 class="text-gray-400 text-xs uppercase font-bold mb-4">Metadata</h3>
             <div class="space-y-4">
                 <div>
@@ -123,7 +85,7 @@
                 </div>
                 <div>
                     <label class="block text-xs text-gray-500 mb-1">Tags</label>
-                    <input type="text" id="tags" placeholder="AI, PCB" class="w-full bg-gray-800 p-2 rounded text-sm border border-gray-700 focus:border-teal-500 outline-none">
+                    <input type="text" id="tags" class="w-full bg-gray-800 p-2 rounded text-sm border border-gray-700 focus:border-teal-500 outline-none">
                 </div>
                 <h3 class="text-gray-400 text-xs uppercase font-bold mt-6 mb-2">Links</h3>
                 <div>
@@ -137,9 +99,29 @@
             </div>
         </aside>
 
-        <!-- Editor Container (Flex-1 ensures it takes all remaining space) -->
+        <!-- EDITOR AREA -->
         <div class="flex-1 flex flex-col h-full bg-[#0d1117] min-w-0">
-            <textarea id="content-md"></textarea>
+            
+            <!-- Editor Tabs -->
+            <div class="flex border-b border-gray-800 bg-gray-900/50 px-4">
+                <button onclick="switchEditor('main')" id="btn-main" class="tab-btn active px-6 py-3 text-sm font-bold">
+                    <i class="fas fa-file-alt mr-2"></i> Main Content
+                </button>
+                <button onclick="switchEditor('learnings')" id="btn-learnings" class="tab-btn px-6 py-3 text-sm font-bold">
+                    <i class="fas fa-brain mr-2"></i> Learnings & Progress
+                </button>
+            </div>
+
+            <!-- Editor Container 1: Main Content -->
+            <div id="editor-main-container" class="flex-1 h-full">
+                <div id="editor-main"></div>
+            </div>
+
+            <!-- Editor Container 2: Learnings (Hidden by default) -->
+            <div id="editor-learnings-container" class="flex-1 h-full hidden">
+                <div id="editor-learnings"></div>
+            </div>
+
         </div>
     </div>
 
@@ -150,74 +132,49 @@
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) window.location.href = '/admin';
 
-        // 2. Initialize EasyMDE
-        const easyMDE = new EasyMDE({ 
-            element: document.getElementById('content-md'),
-            spellChecker: false,
-            placeholder: "Start typing... (Cursor should be Cyan)",
-            status: false, // Hide status bar to save vertical space
-            toolbar: ["bold", "italic", "heading", "|", "quote", "code", "table", "|", "link", "image", "|", "preview", "side-by-side"],
-        });
-
-        // 3. Smart Paste (Turndown)
-        const turndownService = new TurndownService({ headingStyle: 'atx', codeBlockStyle: 'fenced', emDelimiter: '*' });
-        turndownService.use(turndownPluginGfm.gfm);
-
-        // Rule for Big Text -> Heading
-        turndownService.addRule('visualHeading', {
-            filter: function (node) {
-                if (['P', 'SPAN', 'DIV'].includes(node.nodeName)) {
-                    const size = node.style.fontSize;
-                    if (!size) return false;
-                    const px = size.match(/(\d+)px/);
-                    const pt = size.match(/(\d+)pt/);
-                    if (px && parseInt(px[1]) > 18) return true;
-                    if (pt && parseInt(pt[1]) > 13) return true;
+        // 2. Initialize TWO Editors
+        const createEditor = (elId) => {
+            return new toastui.Editor({
+                el: document.querySelector(elId),
+                height: '100%',
+                initialEditType: 'wysiwyg',
+                previewStyle: 'vertical',
+                theme: 'dark',
+                usageStatistics: false,
+                hooks: {
+                    addImageBlobHook: async (blob, callback) => {
+                        // Image upload logic (same as before)
+                        const fileName = `img-${Date.now()}.png`;
+                        const { error } = await supabase.storage.from('project-images').upload(fileName, blob);
+                        if (!error) {
+                            const { data } = supabase.storage.from('project-images').getPublicUrl(fileName);
+                            callback(data.publicUrl, 'image');
+                        }
+                    }
                 }
-                return false;
-            },
-            replacement: function (content) { return '\n\n### ' + content + '\n\n'; }
-        });
+            });
+        };
 
-        easyMDE.codemirror.on("paste", async function(cm, event) {
-            const clipboardData = event.clipboardData || window.clipboardData;
-            
-            if (clipboardData.files.length > 0) {
-                event.preventDefault();
-                const file = clipboardData.files[0];
-                if(file.type.startsWith('image/')) await uploadAndInsertImage(file);
-                return;
+        const editorMain = createEditor('#editor-main');
+        const editorLearnings = createEditor('#editor-learnings');
+
+        // 3. Tab Switching Logic
+        window.switchEditor = (tab) => {
+            if (tab === 'main') {
+                document.getElementById('editor-main-container').classList.remove('hidden');
+                document.getElementById('editor-learnings-container').classList.add('hidden');
+                document.getElementById('btn-main').classList.add('active');
+                document.getElementById('btn-learnings').classList.remove('active');
+            } else {
+                document.getElementById('editor-main-container').classList.add('hidden');
+                document.getElementById('editor-learnings-container').classList.remove('hidden');
+                document.getElementById('btn-main').classList.remove('active');
+                document.getElementById('btn-learnings').classList.add('active');
+                editorLearnings.refresh(); // Refresh layout when becoming visible
             }
+        };
 
-            const html = clipboardData.getData('text/html');
-            if (html) {
-                event.preventDefault();
-                const markdown = turndownService.turndown(html);
-                const doc = cm.getDoc();
-                doc.replaceSelection(markdown);
-            }
-        });
-
-        async function uploadAndInsertImage(file) {
-            const statusEl = document.getElementById('upload-status');
-            statusEl.classList.remove('hidden');
-            const fileName = `paste-${Date.now()}-${Math.floor(Math.random()*1000)}.png`;
-            
-            const { error } = await supabase.storage.from('project-images').upload(fileName, file);
-            if (error) {
-                alert('Image upload failed: ' + error.message);
-                statusEl.classList.add('hidden');
-                return;
-            }
-
-            const { data: { publicUrl } } = supabase.storage.from('project-images').getPublicUrl(fileName);
-            const doc = easyMDE.codemirror.getDoc();
-            const cursor = doc.getCursor();
-            doc.replaceRange(`\n![Image](${publicUrl})\n`, cursor);
-            statusEl.classList.add('hidden');
-        }
-
-        // 4. Load & Save Logic
+        // 4. Load Data
         const urlParams = new URLSearchParams(window.location.search);
         const projectId = urlParams.get('id');
 
@@ -226,10 +183,15 @@
             if (data) {
                 document.getElementById('title').value = data.title;
                 document.getElementById('status').value = data.status;
+                document.getElementById('project_phase').value = data.project_phase || 'Concept';
                 document.getElementById('thumbnail').value = data.thumbnail_url || '';
                 document.getElementById('description').value = data.description || '';
-                easyMDE.value(data.content_md || '');
                 document.getElementById('tags').value = (data.tags || []).join(', ');
+                
+                // Set Both Editors
+                editorMain.setMarkdown(data.content_md || '');
+                editorLearnings.setMarkdown(data.learnings_md || '');
+
                 if (data.links) {
                     document.getElementById('link-github').value = data.links.github || '';
                     document.getElementById('link-demo').value = data.links.demo || '';
@@ -237,17 +199,20 @@
             }
         }
 
+        // 5. Save Data
         document.getElementById('save-btn').onclick = async () => {
             const btn = document.getElementById('save-btn');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+            btn.innerHTML = 'Saving...';
             btn.disabled = true;
 
             const payload = {
                 title: document.getElementById('title').value,
                 status: document.getElementById('status').value,
+                project_phase: document.getElementById('project_phase').value,
                 thumbnail_url: document.getElementById('thumbnail').value,
                 description: document.getElementById('description').value,
-                content_md: easyMDE.value(), 
+                content_md: editorMain.getMarkdown(),
+                learnings_md: editorLearnings.getMarkdown(), // Save second tab
                 tags: document.getElementById('tags').value.split(',').map(t => t.trim()).filter(t => t),
                 links: {
                     github: document.getElementById('link-github').value,
@@ -263,13 +228,11 @@
                 result = await supabase.from('projects').insert([payload]);
             }
 
-            if (result.error) {
-                alert('Save Failed: ' + result.error.message);
-                btn.innerHTML = '<i class="fas fa-save mr-2"></i> Save';
-                btn.disabled = false;
-            } else {
-                window.location.href = '/admin/dashboard';
-            }
+            if (result.error) alert('Error: ' + result.error.message);
+            else window.location.href = '/admin/dashboard';
+            
+            btn.innerHTML = 'Save';
+            btn.disabled = false;
         };
     </script>
 </body>
