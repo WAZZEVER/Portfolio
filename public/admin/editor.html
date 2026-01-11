@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/theme/toastui-editor-dark.min.css" />
     <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+    <!-- Cursor Effect -->
+    <script src="/js/cursor.js" defer></script>
 
     <style>
         /* Custom Space Theme Overrides */
@@ -75,10 +77,35 @@
         <aside class="w-72 bg-gray-900 border-r border-gray-800 p-6 overflow-y-auto shrink-0 hidden md:block z-40">
             <h3 class="text-gray-400 text-xs uppercase font-bold mb-4">Metadata</h3>
             <div class="space-y-4">
+                
+                <!-- NEW: THUMBNAIL UPLOADER -->
                 <div>
-                    <label class="block text-xs text-gray-500 mb-1">Thumbnail URL</label>
-                    <input type="text" id="thumbnail" class="w-full bg-gray-800 p-2 rounded text-sm border border-gray-700 focus:border-teal-500 outline-none">
+                    <label class="block text-xs text-gray-500 mb-2">Thumbnail Image</label>
+                    
+                    <!-- Visual Click Area -->
+                    <div id="thumb-click-area" class="w-full h-32 bg-gray-800 border-2 border-dashed border-gray-600 rounded-lg flex items-center justify-center cursor-pointer hover:border-space-light hover:bg-gray-700 transition relative overflow-hidden group">
+                        
+                        <!-- Preview Image (Initially Hidden) -->
+                        <img id="thumb-preview" src="" class="absolute inset-0 w-full h-full object-cover hidden">
+                        
+                        <!-- Placeholder Content -->
+                        <div id="thumb-placeholder" class="text-center p-4">
+                            <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-1 group-hover:text-space-light"></i>
+                            <p class="text-[10px] text-gray-500 group-hover:text-white">Click to Upload</p>
+                        </div>
+
+                        <!-- Loading Overlay -->
+                        <div id="thumb-loading" class="absolute inset-0 bg-black/50 flex items-center justify-center hidden">
+                            <i class="fas fa-spinner fa-spin text-space-light"></i>
+                        </div>
+                    </div>
+
+                    <!-- Hidden File Input -->
+                    <input type="file" id="thumb-file" accept="image/*" class="hidden">
+                    <!-- Hidden Text Input to store URL for Save Logic -->
+                    <input type="hidden" id="thumbnail">
                 </div>
+
                 <div>
                     <label class="block text-xs text-gray-500 mb-1">Short Description</label>
                     <textarea id="description" rows="3" class="w-full bg-gray-800 p-2 rounded text-sm border border-gray-700 focus:border-teal-500 outline-none"></textarea>
@@ -132,6 +159,52 @@
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) window.location.href = '/admin';
 
+        // --- NEW: THUMBNAIL UPLOAD LOGIC ---
+        const thumbClickArea = document.getElementById('thumb-click-area');
+        const thumbFileInput = document.getElementById('thumb-file');
+        const thumbPreview = document.getElementById('thumb-preview');
+        const thumbInputHidden = document.getElementById('thumbnail');
+        const thumbLoading = document.getElementById('thumb-loading');
+        const thumbPlaceholder = document.getElementById('thumb-placeholder');
+
+        // Trigger file select on click
+        thumbClickArea.onclick = () => thumbFileInput.click();
+
+        // Handle File Selection
+        thumbFileInput.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Show Loading
+            thumbLoading.classList.remove('hidden');
+
+            const fileName = `thumb-${Date.now()}-${Math.floor(Math.random()*1000)}`;
+            
+            // Upload to Supabase
+            const { error } = await supabase.storage.from('project-images').upload(fileName, file);
+
+            if (error) {
+                alert('Thumbnail upload failed: ' + error.message);
+                thumbLoading.classList.add('hidden');
+                return;
+            }
+
+            // Get Public URL
+            const { data } = supabase.storage.from('project-images').getPublicUrl(fileName);
+            const publicUrl = data.publicUrl;
+
+            // Update UI
+            thumbPreview.src = publicUrl;
+            thumbPreview.classList.remove('hidden');
+            thumbPlaceholder.classList.add('hidden');
+            
+            // Store URL for Save Function
+            thumbInputHidden.value = publicUrl;
+            
+            thumbLoading.classList.add('hidden');
+        };
+
+
         // 2. Initialize TWO Editors
         const createEditor = (elId) => {
             return new toastui.Editor({
@@ -143,8 +216,7 @@
                 usageStatistics: false,
                 hooks: {
                     addImageBlobHook: async (blob, callback) => {
-                        // Image upload logic (same as before)
-                        const fileName = `img-${Date.now()}.png`;
+                        const fileName = `img-${Date.now()}-${Math.floor(Math.random()*1000)}`;
                         const { error } = await supabase.storage.from('project-images').upload(fileName, blob);
                         if (!error) {
                             const { data } = supabase.storage.from('project-images').getPublicUrl(fileName);
@@ -170,7 +242,7 @@
                 document.getElementById('editor-learnings-container').classList.remove('hidden');
                 document.getElementById('btn-main').classList.remove('active');
                 document.getElementById('btn-learnings').classList.add('active');
-                editorLearnings.refresh(); // Refresh layout when becoming visible
+                editorLearnings.refresh(); 
             }
         };
 
@@ -184,10 +256,17 @@
                 document.getElementById('title').value = data.title;
                 document.getElementById('status').value = data.status;
                 document.getElementById('project_phase').value = data.project_phase || 'Concept';
-                document.getElementById('thumbnail').value = data.thumbnail_url || '';
                 document.getElementById('description').value = data.description || '';
                 document.getElementById('tags').value = (data.tags || []).join(', ');
                 
+                // Set Thumbnail Data
+                if (data.thumbnail_url) {
+                    thumbInputHidden.value = data.thumbnail_url;
+                    thumbPreview.src = data.thumbnail_url;
+                    thumbPreview.classList.remove('hidden');
+                    thumbPlaceholder.classList.add('hidden');
+                }
+
                 // Set Both Editors
                 editorMain.setMarkdown(data.content_md || '');
                 editorLearnings.setMarkdown(data.learnings_md || '');
@@ -209,10 +288,10 @@
                 title: document.getElementById('title').value,
                 status: document.getElementById('status').value,
                 project_phase: document.getElementById('project_phase').value,
-                thumbnail_url: document.getElementById('thumbnail').value,
+                thumbnail_url: document.getElementById('thumbnail').value, // Reads from hidden input
                 description: document.getElementById('description').value,
                 content_md: editorMain.getMarkdown(),
-                learnings_md: editorLearnings.getMarkdown(), // Save second tab
+                learnings_md: editorLearnings.getMarkdown(), 
                 tags: document.getElementById('tags').value.split(',').map(t => t.trim()).filter(t => t),
                 links: {
                     github: document.getElementById('link-github').value,
